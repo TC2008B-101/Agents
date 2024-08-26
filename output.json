@@ -1,0 +1,21 @@
+{
+    "route": [
+        [
+            [
+                "Policia",
+                55
+            ],
+            [
+                "Cargamento",
+                120
+            ]
+        ],
+        [
+            [
+                "Mojado pollos",
+                5
+            ]
+        ],
+        []
+    ]
+}
