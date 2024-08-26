@@ -1,4 +1,5 @@
 import random
+import json
 
 # Esto va a ser el json de entrada
 clima = 0 # 0-3
@@ -38,7 +39,6 @@ for i in range(len(tramos)):
         if probPonchado <= poncharGenerator:
             tiempoPonchado = 30
             tramos[i] += tiempoPonchado
-            horaFinal += tiempoPonchado
             evento = ("Ponchadura", tiempoPonchado)
             eventos.append(evento)
 
@@ -47,7 +47,6 @@ for i in range(len(tramos)):
     if policiaGenerator <= 0.10:
         tiempoPolicia = random.randint(5,70)
         tramos[i] += tiempoPolicia
-        horaFinal += tiempoPolicia
         evento = ("Policia", tiempoPolicia)
         eventos.append(evento)
 
@@ -59,37 +58,33 @@ for i in range(len(tramos)):
         if necesidad == 1:
             tiempoBanio = 10
             tramos[i] += tiempoBanio
-            horaFinal += tiempoBanio
             eventos.append(("Baño", tiempoBanio))
 
         if necesidad == 2:
             tiempoComer = 20
             tramos[i] += tiempoComer
-            horaFinal += tiempoComer
             eventos.append(("Comer", tiempoComer))
 
         if necesidad == 3:
             tiempoDormir = 30
             tramos[i] += tiempoDormir
-            horaFinal += tiempoDormir
             eventos.append(("Dormir", tiempoDormir))
 
     # En primer tramo evento de cargamento
     if i == 0:
         tiempoCargamento = 120
         tramos[i] += tiempoCargamento
-        horaFinal += tiempoCargamento
         eventos.append(("Cargamento", tiempoCargamento))
 
     # En segundo tramo evento de moja pollos
     if i == 1 and (tiempoFinal <= 1320 or tiempoFinal >= 270):
         tiempoMojado = 5
         tramos[i] += tiempoMojado
-        horaFinal += tiempoMojado
         eventos.append(("Mojado pollos", tiempoMojado))
 
     # Añadir tiempo de tramo a tiempoFinal
     tiempoFinal += tramos[i] 
+    horaFinal += tramos[i]
 
     # Calcular hora
     if horaFinal > 1439:
@@ -101,7 +96,8 @@ Recorrido.append(tiempoFinal)
 Recorrido.append(horaFinal)
 
 print(f"Tiempo final: {Recorrido[-2]} minutos")
-print(f"Hora final: {Recorrido[-1]//60} horas {Recorrido[-1]%60} minutos")
+print(f"Hora inicial: {minuto//60} horas {minuto%60} minutos")
+print(f"Hora final: {Recorrido[-1]//60} horas {Recorrido[-1]%60} minutos") 
 print(f"Tramo 1: {Recorrido[0]}")
 print(f"Tramo 2: {Recorrido[1]}")
 print(f"Tramo 3: {Recorrido[2]}")
