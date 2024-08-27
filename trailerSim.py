@@ -2,9 +2,43 @@ import random
 import json
 from datetime import datetime, timedelta
 
-# Leer datos desde input.json
-with open('input.json', 'r') as file:
-    data = json.load(file)
+# Simulación del trayecto de un tráiler
+
+def trailer_sim_handler(data):
+    print("Iniciando la simulación del trayecto del trailer...\n")
+
+    print("Datos de la simulación:")
+    print(data)
+    
+    hora_inicio = datetime.strptime(data["inicio"]["hora_inicio"], '%H:%M').time()
+    hora_objetivo = datetime.strptime(data["final"]["hora_llegada_esperada"], '%H:%M').time()
+    print(f"Hora objetivo de llegada: {hora_objetivo.strftime('%H:%M')}")
+    
+    eventos, hora_llegada = simular_trayecto(data,hora_inicio, hora_objetivo)
+    
+    resultado = {
+        "eventos": eventos,
+        "hora_llegada": hora_llegada.strftime('%H:%M'),
+        "a_tiempo": hora_llegada <= hora_objetivo
+    }
+    
+    print("\nEventos ocurridos durante el trayecto:")
+    if eventos:
+        for evento in eventos:
+            print(evento)
+    else:
+        print("No hubo eventos durante el trayecto.")
+    
+    if resultado["a_tiempo"]:
+        print(f"\nEl trailer llegó a tiempo o antes de las {hora_objetivo.strftime('%H:%M')}.")
+    else:
+        print(f"\nEl trailer se retrasó y llegó después de las {hora_objetivo.strftime('%H:%M')}.")
+    
+    return resultado
+
+# # Leer datos desde input.json
+# with open('input.json', 'r') as file:
+#     data = json.load(file)
 
 # Probabilidades de eventos
 PROBABILIDAD_CLIMA = {0: 0.01, 1: 0.10, 2: 0.20, 3: 0.30}  # Aumenta con la gravedad del clima
@@ -71,7 +105,7 @@ def evaluar_bano_cargamento(hora_actual, checkpoint):
     return False
 
 # Simular el trayecto del tráiler
-def simular_trayecto(hora_inicio, hora_objetivo):
+def simular_trayecto(data,hora_inicio, hora_objetivo):
     eventos = []
     hora_actual = datetime.combine(datetime.today(), hora_inicio)
     duracion_total = timedelta()  # Inicializa la duración total en 0
