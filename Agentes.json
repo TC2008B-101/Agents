@@ -4,27 +4,54 @@
     "start_time": 1000,
     "weather": 2,
     "maintenance": 0.4,
-    "total_time": 0,
-    "end_time": 0,
-    "coordinates": [[10,10], [20,25], [30,40]],
+    "total_time": 262,
+    "end_time": 1262,
+    "coordinates": [
+        [
+            10,
+            10
+        ],
+        [
+            20,
+            25
+        ],
+        [
+            30,
+            40
+        ]
+    ],
     "segment": [
         {
-            "segment_id": 0,
+            "segment_id": 1,
             "regular_duration": 120,
-            "events": [],
-            "estimated_time": 0
+            "events": [
+                {
+                    "event_name": "Banio",
+                    "event_time": 11
+                }
+            ],
+            "estimated_time": 117
         },
         {
-            "segment_id": 1,
+            "segment_id": 2,
             "regular_duration": 30,
             "events": [
                 {
+                    "event_name": "Banio",
+                    "event_time": 1
+                },
+                {
                     "event_name": "Mojapollos",
                     "event_time": 5
-                }   
+                }
             ],
-            "estimated_time": 0
+            "estimated_time": 24
+        },
+        {
+            "segment_id": 3,
+            "regular_duration": 95,
+            "events": [],
+            "estimated_time": 121
         }
-
     ]
 }
