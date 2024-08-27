@@ -1,0 +1,29 @@
+{
+  "inicio": {
+    "hora_inicio": "13:00"
+  },
+  "checkpoints": [
+    {
+      "checkpoint": 1,
+      "clima": 0,
+      "mantenimiento": 0,
+      "tiempo_por_defecto_minutos": 70
+    },
+    {
+      "checkpoint": 2,
+      "clima": 0,
+      "mantenimiento": 1,
+      "tiempo_por_defecto_minutos": 100
+    },
+    {
+      "checkpoint": 3,
+      "clima": 2,
+      "mantenimiento": 1,
+      "tiempo_por_defecto_minutos": 70
+    }
+  ],
+  "final": {
+    "checkpoint": 4,
+    "hora_llegada_esperada": "17:00"
+  }
+}
