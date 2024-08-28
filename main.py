@@ -3,60 +3,17 @@ import json
 import statistics as st
 from datetime import datetime, timedelta
 
-# Simulación del trayecto de un tráiler
-
-def trailer_sim_handler(data):
-    print("Iniciando la simulación del trayecto del trailer...\n")
-
-    print("Datos de la simulación:")
-    print(data)
-    
-    hora_inicio = datetime.strptime(data["inicio"]["hora_inicio"], '%H:%M').time()
-    hora_objetivo = datetime.strptime(data["final"]["hora_llegada_esperada"], '%H:%M').time()
-    print(f"Hora objetivo de llegada: {hora_objetivo.strftime('%H:%M')}")
-    
-    eventos, hora_llegada = simular_trayecto(data,hora_inicio, hora_objetivo)
-    
-    resultado = {
-        "eventos": eventos,
-        "hora_llegada": hora_llegada.strftime('%H:%M'),
-        "a_tiempo": hora_llegada <= hora_objetivo
-    }
-    
-    print("\nEventos ocurridos durante el trayecto:")
-    if eventos:
-        for evento in eventos:
-            print(evento)
-    else:
-        print("No hubo eventos durante el trayecto.")
-    
-    if resultado["a_tiempo"]:
-        print(f"\nEl trailer llegó a tiempo o antes de las {hora_objetivo.strftime('%H:%M')}.")
-    else:
-        print(f"\nEl trailer se retrasó y llegó después de las {hora_objetivo.strftime('%H:%M')}.")
-    
-    return resultado
-
-# Leer datos desde input.json
-with open('Agentes.json', 'r') as file:
-    data = json.load(file)
-
 # Probabilidades de eventos
 PROBABILIDAD_CLIMA = {0: 0.01, 1: 0.10, 2: 0.20, 3: 0.30}  # Aumenta con la gravedad del clima
 PROBABILIDAD_MANTENIMIENTO = {0: 0.02, 0.1: 0.03, 0.2: 0.04, 0.3: 0.05, 0.4: 0.06, 0.5: 0.07, 0.6: 0.08, 0.7: 0.09, 0.8: 0.10, 0.9: 0.10, 1: 0.10}  # Probabilidad de ponchadura según el mantenimiento
 
-# Función para determinar si el cargamento necesita ser bañado
-def evaluar_bano_cargamento(hora_actual):
-    hora_minima_bano = 5 * 60  # 5:00 AM en minutos
-    hora_maxima_bano = 22 * 60  # 10:00 PM en minutos
-    if hora_minima_bano <= hora_actual <= hora_maxima_bano:
-        return True
-    return False
-
 # Función para manejar todos los eventos posibles
 def evaluar_eventos(hora_actual, checkpoint, clima, mantenimiento, fatiga, checkpoint_para_baño):
     eventos = []
-    tiempo_extra = timedelta() # Tiempo adicional debido a eventos
+    tiempo_extra = timedelta()  # Tiempo adicional debido a eventos
+    # Tiempo por defecto entre checkpoints
+    tiempo_por_defecto = int((st.NormalDist(checkpoint["regular_duration"], checkpoint["regular_duration"]*0.2).samples(1))[0])
+    tiempo_entre_checkpoints = timedelta(minutes=tiempo_por_defecto)
 
     # Evaluar ponchadura
     probabilidad_clima = PROBABILIDAD_CLIMA[clima] * 0.1  # El clima aporta un 10% a la probabilidad total
@@ -64,98 +21,82 @@ def evaluar_eventos(hora_actual, checkpoint, clima, mantenimiento, fatiga, check
     probabilidad_total = probabilidad_clima + probabilidad_mantenimiento
     
     if random.random() < probabilidad_total:  # Si la probabilidad es suficiente, ocurre una ponchadura
-        eventos.append("Ponchadura")
-        tiempo_extra += timedelta(minutes=int(st.NormalDist(30, 5).samples(1)[0]))
+        eventos.append({"event_name": "Ponchadura", "duration": int(st.NormalDist(30, 5).samples(1)[0])})
+        tiempo_extra += timedelta(minutes=eventos[-1]["duration"])
 
     # Evaluar parada para el baño
-
     probabilidad_base_baño = 0.1 if 360 <= hora_actual.hour * 60 + hora_actual.minute <= 720 else 0.05
     if checkpoint["segment_id"] == checkpoint_para_baño or random.random() < probabilidad_base_baño:
-        eventos.append("Parada para banio")
-        tiempo_extra += timedelta(minutes=int(st.NormalDist(15, 5).samples(1)[0]))
+        eventos.append({"event_name": "Parada para baño", "duration": int(st.NormalDist(15, 5).samples(1)[0])})
+        tiempo_extra += timedelta(minutes=eventos[-1]["duration"])
 
     # Evaluar si se necesita dormir debido a la fatiga
-    fatiga += tiempo_extra.total_seconds()/3600 # Duración del tramo en horas
-    fatiga += tiempo_extra.total_seconds()/3600 * 20 # Aumenta la fatiga en 20% por cada hora
-    if fatiga > 70: # Si la fatiga supera el 70%, se necesita descansar
-        eventos.append(f"Fatiga (Nivel: {fatiga}%), se detiene a descansar")
-        tiempo_extra += timedelta(hours=1) # Se agrega 1 hora por descansar
-        fatiga = 0 # Resetea la fatiga después de dormir
+    fatiga += tiempo_extra.total_seconds() / 3600  # Duración del tramo en horas
+    fatiga += tiempo_entre_checkpoints.total_seconds() * 20 / 3600  # Aumenta la fatiga en 20% por cada hora
+    if fatiga > 70:  # Si la fatiga supera el 70%, se necesita descansar
+        eventos.append({"event_name": f"Fatiga (Nivel: {fatiga}%)", "duration": 60})
+        tiempo_extra += timedelta(hours=1)
+        fatiga = 0  # Resetea la fatiga después de dormir
 
     # Evaluar robo de cargamento entre la 1:00 AM y 4:00 AM
-    hora_minima_robo = 1 * 60 # 1:00 AM en minutos
-    hora_maxima_robo = 4 * 60 # 4:00 AM en minutos
+    hora_minima_robo = 1 * 60  # 1:00 AM en minutos
+    hora_maxima_robo = 4 * 60  # 4:00 AM en minutos
     if hora_minima_robo <= hora_actual.hour * 60 + hora_actual.minute <= hora_maxima_robo:
         if int(st.NormalDist(7, 3).samples(1)[0]) < 5:
-            eventos.append("Robo de cargamento")
-            tiempo_extra += timedelta(minutes=int(st.NormalDist(60, 10).samples(1)[0]))
+            eventos.append({"event_name": "Robo de cargamento", "duration": int(st.NormalDist(60, 10).samples(1)[0])})
+            tiempo_extra += timedelta(minutes=eventos[-1]["duration"])
 
     # Evaluar baño de cargamento entre las 5:00 AM y 10:00 PM
     hora_minima_bano = 5 * 60  # 5:00 AM en minutos
     hora_maxima_bano = 22 * 60  # 10:00 PM en minutos
-    if hora_minima_bano <= hora_actual.hour * 60 + hora_actual.minute <= hora_maxima_bano:
-        eventos.append("Banio de cargamento")
-        tiempo_extra += timedelta(minutes=int(st.NormalDist(5, 2).samples(1)[0]))
-        
+    if hora_minima_bano <= hora_actual.hour * 60 + hora_actual.minute <= hora_maxima_bano and checkpoint['segment_id'] == 2:
+        eventos.append({"event_name": "Baño de cargamento", "duration": int(st.NormalDist(5, 2).samples(1)[0])})
+        tiempo_extra += timedelta(minutes=eventos[-1]["duration"])
+
     return eventos, tiempo_extra, fatiga
 
 # Simular el trayecto del tráiler
-def simular_trayecto(data,hora_inicio):
+def simular_trayecto(data, hora_inicio):
     eventos_totales = []
-    hora_actual = datetime.combine(datetime.today(), (hora_inicio))
+    hora_actual = datetime.combine(datetime.today(), hora_inicio)
     duracion_total = timedelta()  # Inicializa la duración total en 0
     fatiga = 0  # Estado inicial de fatiga
     tiempos_checkpoint = {}  # Diccionario para guardar los tiempos de cada checkpoint
 
-    # Seleccionar aleatoriamente un checkpoint para forzar la parada para el baño
     checkpoint_para_baño = random.choice([checkpoint["segment_id"] for checkpoint in data["segment"]])
 
     for checkpoint in data["segment"]:
         clima = data["weather"]
         mantenimiento = data["maintenance"]
-        tiempo_por_defecto = int((st.NormalDist(checkpoint["regular_duration"], checkpoint["regular_duration"]*0.2).samples(1))[0])
-        inicio_checkpoint = hora_actual
+        tiempo_por_defecto = int((st.NormalDist(checkpoint["regular_duration"], checkpoint["regular_duration"] * 0.2).samples(1))[0])
+        tiempo_entre_checkpoints = timedelta(minutes=tiempo_por_defecto)
         json_events = []
-        
+
         print(f"\nCheckpoint {checkpoint['segment_id']} - Clima: {clima}, Mantenimiento: {mantenimiento}, Hora actual: {hora_actual.strftime('%H:%M')}")
 
         # Evaluar todos los eventos
         eventos, tiempo_extra, fatiga = evaluar_eventos(hora_actual, checkpoint, clima, mantenimiento, fatiga, checkpoint_para_baño)
 
-        # Sumar eventos al total
-        eventos_totales.extend(eventos)
+        for evento in eventos:
+            evento.update({"checkpoint": checkpoint['segment_id'], "time": hora_actual.strftime('%H:%M')})
+            eventos_totales.append(evento)
 
-        # Sumar tiempo extra
-        tiempo_entre_checkpoints = timedelta(minutes=tiempo_por_defecto) + tiempo_extra
+        tiempo_entre_checkpoints += tiempo_extra
 
         # Manejar eventos preestablecidos
-        if len(checkpoint["events"]) > 0:
-            for event in checkpoint["events"]:
-                # Evaluar baño de cargamento
-                if event["event_name"] == "Mojapollos" and evaluar_bano_cargamento(hora_actual.hour * 60 + hora_actual.minute):
-                    eventos_totales.append(f"Banio de cargamento en el checkpoint {checkpoint['segment_id']} a las {hora_actual.strftime('%H:%M')}")
-                    print("¡Banio de cargamento!")
+        for event in checkpoint["events"]:
+            if not any(e['event_name'] == event["event_name"] and e["checkpoint"] == checkpoint['segment_id'] for e in eventos_totales):
+                eventos_totales.append({"event_name": event["event_name"], "checkpoint": checkpoint['segment_id'], "time": hora_actual.strftime('%H:%M'), "duration": event["event_time"]})
+                print(f"{event['event_name']} en el checkpoint {checkpoint['segment_id']} a las {hora_actual.strftime('%H:%M')}!")
 
-                    calculo_minutos = int((st.NormalDist(5, 2).samples(1))[0])
-                    tiempo_entre_checkpoints += timedelta(minutes=calculo_minutos)  # Se agregan aprox 5 minutos por bañar el cargamento
+                calculo_minutos = int((st.NormalDist(event["event_time"], event["event_time"] * 0.2).samples(1))[0])
+                tiempo_entre_checkpoints += timedelta(minutes=calculo_minutos)
 
-                    json_events.append({"event_name": "Mojapollos", "event_time": calculo_minutos})
-                else:
-                    eventos_totales.append(f"{event['event_name']} en el checkpoint {checkpoint['segment_id']} a las {hora_actual.strftime('%H:%M')}")
-                    print(f"{event['event_name']}!")
+                json_events.append({"event_name": event["event_name"], "event_time": calculo_minutos})
 
-                    calculo_minutos = int((st.NormalDist(event["event_time"], event["event_time"]*0.2).samples(1))[0])
-                    tiempo_entre_checkpoints += timedelta(minutes=calculo_minutos)
-
-                    json_events.append({"event_name": event["event_name"], "event_time": calculo_minutos})
-
-        checkpoint["events"] = json_events 
-
-        # Avanzar tiempo con el tiempo por defecto más cualquier tiempo adicional
+        checkpoint["events"] = json_events
         duracion_total += tiempo_entre_checkpoints
         hora_actual += tiempo_entre_checkpoints
-        
-        # Calcular y guardar el tiempo tardado en el checkpoint
         tiempo_tardado = int(tiempo_entre_checkpoints.total_seconds() // 60)
         checkpoint["estimated_time"] = tiempo_tardado
         tiempos_checkpoint[f"Checkpoint {checkpoint['segment_id']}"] = tiempo_tardado
@@ -163,20 +104,19 @@ def simular_trayecto(data,hora_inicio):
 
     hora_llegada = (datetime.combine(datetime.today(), hora_inicio) + duracion_total).time()
     print(f"\nHora de inicio del tráiler: {hora_inicio.strftime('%H:%M')}")
-    # print(f"Hora esperada de llegada: {hora_objetivo.strftime('%H:%M')}")
     print(f"Hora de llegada calculada: {hora_llegada.strftime('%H:%M')}")
 
-    data["total_time"] = duracion_total.days*24*60 + duracion_total.seconds//60
+    data["total_time"] = duracion_total.days * 24 * 60 + duracion_total.seconds // 60
     data["end_time"] = data["start_time"] + data["total_time"]
 
     # Guardar los eventos en un archivo JSON
     with open('eventos.json', 'w') as eventos_file:
-        json.dump(eventos_totales,eventos_file, indent=4)
+        json.dump(eventos_totales, eventos_file, indent=4)
+
     # Guardar el resultado en un archivo JSON
     output_data = {
         "hora_inicio": hora_inicio.strftime('%H:%M'),
         "tiempos_checkpoint": tiempos_checkpoint,
-        # "hora_llegada_esperada": hora_objetivo.strftime('%H:%M'),
         "hora_llegada_calculada": hora_llegada.strftime('%H:%M')
     }
 
@@ -190,9 +130,10 @@ def simular_trayecto(data,hora_inicio):
 
 # Ejecutar la simulación
 if __name__ == "__main__":
-    # Parámetros iniciales
-    hora_inicio = datetime.strptime(f"{data['start_time']//60}:{data['start_time']%60}", '%H:%M').time() # Hora de inicio desde input.json
-    # hora_objetivo = datetime.strptime(data["final"]["hora_llegada_esperada"], '%H:%M').time()  # Hora objetivo de llegada: 5:00 PM
+    with open('Agentes.json', 'r') as file:
+        data = json.load(file)
+    
+    hora_inicio = datetime.strptime(f"{data['start_time']//60}:{data['start_time']%60}", '%H:%M').time()
 
     print("Iniciando la simulacion del trayecto del trailer...\n")
     eventos, hora_llegada = simular_trayecto(data, hora_inicio)
@@ -200,12 +141,6 @@ if __name__ == "__main__":
     print("\nEventos ocurridos durante el trayecto:")
     if eventos:
         for evento in eventos:
-            print(evento)
+            print(f"{evento['event_name']} en el checkpoint {evento['checkpoint']} a las {evento['time']} (Duración: {evento['duration']} minutos)")
     else:
         print("No hubo eventos durante el trayecto.")
-
-    # Comprobar si llegó a tiempo
-    # if hora_llegada <= hora_objetivo:
-    #     print("\nEl trailer llego a tiempo o antes de las 5:00 PM.")
-    # else:
-    #     print("\nEl trailer se retrasó y llego después de las 5:00 PM.")

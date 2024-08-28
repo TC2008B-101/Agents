@@ -1,12 +1,56 @@
 [
-    "Banio de cargamento",
-    "Banio en el checkpoint 1 a las 16:40",
-    "Cargamento en el checkpoint 1 a las 16:40",
-    "Banio de cargamento",
-    "Banio en el checkpoint 2 a las 21:15",
-    "Banio de cargamento en el checkpoint 2 a las 21:15",
-    "Parada para banio",
-    "Banio de cargamento",
-    "Banio en el checkpoint 3 a las 21:37",
-    "Banio en el checkpoint 3 a las 21:37"
+    {
+        "event_name": "Banio",
+        "checkpoint": 1,
+        "time": "16:40",
+        "duration": 13
+    },
+    {
+        "event_name": "Cargamento",
+        "checkpoint": 1,
+        "time": "16:40",
+        "duration": 126
+    },
+    {
+        "event_name": "Parada para ba\u00f1o",
+        "duration": 15,
+        "checkpoint": 2,
+        "time": "21:05"
+    },
+    {
+        "event_name": "Ba\u00f1o de cargamento",
+        "duration": 3,
+        "checkpoint": 2,
+        "time": "21:05"
+    },
+    {
+        "event_name": "Banio",
+        "checkpoint": 2,
+        "time": "21:05",
+        "duration": 0
+    },
+    {
+        "event_name": "Mojapollos",
+        "checkpoint": 2,
+        "time": "21:05",
+        "duration": 7
+    },
+    {
+        "event_name": "Parada para ba\u00f1o",
+        "duration": 9,
+        "checkpoint": 3,
+        "time": "22:02"
+    },
+    {
+        "event_name": "Fatiga (Nivel: 96.73333333333333%)",
+        "duration": 60,
+        "checkpoint": 3,
+        "time": "22:02"
+    },
+    {
+        "event_name": "Banio",
+        "checkpoint": 3,
+        "time": "22:02",
+        "duration": 17
+    }
 ]
