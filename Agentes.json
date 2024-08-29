@@ -29,7 +29,11 @@
         {
             "name": "bathroom",
             "prob": 0.05,
-            "duration":[15,2]
+            "duration":[15,2],
+            "type": {
+                "name": "fijo",
+                "checkpoints": [2]
+            }
         },
         {
             "name": "cop",
@@ -50,16 +54,18 @@
             "name": "mojaPollos",
             "prob": 0.5,
             "duration":[5,1]
+
         }
     ],
     "segment": [
         {
             "segment_id": 1,
-            "regular_duration": [120, 2]
+            "regular_duration": [120, 2],
             "events": [
                 {
-                    "event_name": "Banio",
-                    "event_time": 11
+                    "name": "mojaPollos",
+                    "prob": 1,
+                    "duration":[20,15]
                 },
                 {
                     "event_name": "Cargamento",

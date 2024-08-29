@@ -12,7 +12,8 @@ def evaluar_eventos(hora_actual, checkpoint, clima, mantenimiento, fatiga, check
     eventos = []
     tiempo_extra = timedelta()  # Tiempo adicional debido a eventos
     # Tiempo por defecto entre checkpoints
-    tiempo_por_defecto = int((st.NormalDist(checkpoint["regular_duration"], checkpoint["regular_duration"]*0.2).samples(1))[0])
+    tiempo_por_defecto = (st.NormalDist(checkpoint["regular_duration"][0], checkpoint["regular_duration"][1]).samples(1))[0]
+    # tiempo_por_defecto = int((st.NormalDist(checkpoint["regular_duration"], checkpoint["regular_duration"]*0.2).samples(1))[0])
     tiempo_entre_checkpoints = timedelta(minutes=tiempo_por_defecto)
 
     # Evaluar ponchadura
@@ -50,7 +51,7 @@ def evaluar_eventos(hora_actual, checkpoint, clima, mantenimiento, fatiga, check
     hora_minima_bano = 5 * 60  # 5:00 AM en minutos
     hora_maxima_bano = 22 * 60  # 10:00 PM en minutos
     if hora_minima_bano <= hora_actual.hour * 60 + hora_actual.minute <= hora_maxima_bano and checkpoint['segment_id'] == 2:
-        eventos.append({"event_name": "Banio de cargamento", "duration": int(st.NormalDist(5, 2).samples(1)[0])})
+        eventos.append({"event_name": "Bao de cargamento", "duration": int(st.NormalDist(5, 2).samples(1)[0])})
         tiempo_extra += timedelta(minutes=eventos[-1]["duration"])
 
     return eventos, tiempo_extra, fatiga
