@@ -3,54 +3,48 @@
         "event_name": "Banio",
         "checkpoint": 1,
         "time": "16:40",
-        "duration": 13
+        "duration": 12
     },
     {
         "event_name": "Cargamento",
         "checkpoint": 1,
         "time": "16:40",
-        "duration": 126
+        "duration": 149
     },
     {
-        "event_name": "Parada para ba\u00f1o",
-        "duration": 15,
+        "event_name": "Banio de cargamento",
+        "duration": 8,
         "checkpoint": 2,
-        "time": "21:05"
-    },
-    {
-        "event_name": "Ba\u00f1o de cargamento",
-        "duration": 3,
-        "checkpoint": 2,
-        "time": "21:05"
+        "time": "21:21"
     },
     {
         "event_name": "Banio",
         "checkpoint": 2,
-        "time": "21:05",
+        "time": "21:21",
         "duration": 0
     },
     {
         "event_name": "Mojapollos",
         "checkpoint": 2,
-        "time": "21:05",
-        "duration": 7
+        "time": "21:21",
+        "duration": 1
     },
     {
-        "event_name": "Parada para ba\u00f1o",
-        "duration": 9,
+        "event_name": "Parada para banio",
+        "duration": 23,
         "checkpoint": 3,
-        "time": "22:02"
+        "time": "22:01"
     },
     {
-        "event_name": "Fatiga (Nivel: 96.73333333333333%)",
+        "event_name": "Fatiga (Nivel: 74.05%)",
         "duration": 60,
         "checkpoint": 3,
-        "time": "22:02"
+        "time": "22:01"
     },
     {
         "event_name": "Banio",
         "checkpoint": 3,
-        "time": "22:02",
+        "time": "22:01",
         "duration": 17
     }
 ]

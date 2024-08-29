@@ -1,9 +1,9 @@
 {
     "hora_inicio": "16:40",
     "tiempos_checkpoint": {
-        "Checkpoint 1": 265,
-        "Checkpoint 2": 57,
-        "Checkpoint 3": 166
+        "Checkpoint 1": 281,
+        "Checkpoint 2": 40,
+        "Checkpoint 3": 223
     },
-    "hora_llegada_calculada": "00:48"
+    "hora_llegada_calculada": "01:44"
 }
