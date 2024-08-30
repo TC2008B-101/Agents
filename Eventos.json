@@ -1,0 +1,54 @@
+{
+
+    "mandatory_events": [
+        {
+            "name": "Mojapollos",
+            "duration": 5,
+            "deviation": 2,
+            "segment": 2,
+            "time_window": [360, 1199]
+        },
+        {
+            "name": "Cargo load",
+            "duration": 120,
+            "deviation": 20,
+            "segment": 1,
+            "time_window": [0, 1439]
+        }
+    ],
+
+    "random_events": [
+        {
+            "name": "Flat tire",
+            "duration": 120,
+            "deviation": 20,
+            "probability": 0.10,
+            "weather_impact": 0.05,
+            "maintenance_impact": 0.02
+        },
+        {
+            "name": "Police",
+            "duration": 120,
+            "deviation": 20,
+            "probability": 0.2,
+            "weather_impact": 0,
+            "maintenance_impact": 0
+        },
+        {
+            "name": "Toilet break",
+            "duration": 120,
+            "deviation": 20,
+            "probability": 0.15,
+            "weather_impact": 0,
+            "maintenance_impact": 0
+        },
+        {
+            "name": "Crash",
+            "duration": 120,
+            "deviation": 20,
+            "probability": 0.25,
+            "weather_impact": 0.1,
+            "maintenance_impact": 0.03
+        }
+    ]
+}

@@ -196,6 +196,8 @@ def simular_trayecto(data,hora_inicio):
 
             json_events.append({"event_name": "Robo", "event_time": calculo_minutos})
 
+
+        # Checar por eventos obligatorios ya incluidos en json de entrada
         if len(checkpoint["events"]) > 0:
             for event in checkpoint["events"]:
                 # Evaluar baño de cargamento
