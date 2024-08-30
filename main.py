@@ -3,12 +3,11 @@ import json
 import statistics as st
 from datetime import datetime, timedelta
 
-# Probabilidades de eventos
-PROBABILIDAD_CLIMA = {0: 0.01, 1: 0.10, 2: 0.20, 3: 0.30}  # Aumenta con la gravedad del clima
-PROBABILIDAD_MANTENIMIENTO = {0: 0.02, 0.1: 0.03, 0.2: 0.04, 0.3: 0.05, 0.4: 0.06, 0.5: 0.07, 0.6: 0.08, 0.7: 0.09, 0.8: 0.10, 0.9: 0.10, 1: 0.10}  # Probabilidad de ponchadura según el mantenimiento
+# STATE IMPACT PROBABILITY
+WEATHER_PROBABILITY = {"Soleado": 0.01, "Nublado": 0.01, "Llovizna": 0.10, "Lluvia": 0.20, "Tormenta": 0.30}  # Aumenta con la gravedad del clima
+MAINTENANCE_PROBABILITY = {0: 0.02, 0.1: 0.03, 0.2: 0.04, 0.3: 0.05, 0.4: 0.06, 0.5: 0.07, 0.6: 0.08, 0.7: 0.09, 0.8: 0.10, 0.9: 0.10, 1: 0.10}  # Probabilidad de ponchadura según el mantenimiento
 
 # Function for managing all possible events
-# TODO: MANEJAR IMPACTO DE CLIMA Y MANTENIMIENTO
 def evaluate_events(current_time, segment, weather, maintenance): 
     events = []
     extra_time = timedelta()  # Additional time added to segment due to events
@@ -35,6 +34,7 @@ def evaluate_events(current_time, segment, weather, maintenance):
 
         if event["probability"] >= random.random():
             t = st.NormalDist(event["duration"], event["deviation"]).samples(1)[0]
+            t *= (1 + event["weather_impact"] + event["maintenance_impact"])    # Impacted by states
             events.append({
                 "event_name": event["name"],
                 "event_time": t,
@@ -59,6 +59,7 @@ def simulate_trip(data, start_time):
 
         # Calculate segment duration
         segment_duration = (st.NormalDist(segment["regular_duration"][0], segment["regular_duration"][1]).samples(1))[0]
+        segment_duration *= (1 + WEATHER_PROBABILITY.get(weather) + MAINTENANCE_PROBABILITY.get(maintenance))   # Impact by states
         current_time += timedelta(minutes=segment_duration)
         
         # Evaluate all events

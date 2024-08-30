@@ -2,10 +2,10 @@
     "simulation_id": 0,
     "route_name": "Yucatecos",
     "start_time": 600,
-    "weather": 2,
+    "weather": "Llovizna",
     "maintenance": 0.4,
-    "total_time": 535,
-    "end_time": 1135,
+    "total_time": 497,
+    "end_time": 1097,
     "coordinates": [
         [
             10,
@@ -30,11 +30,11 @@
             "events": [
                 {
                     "event_name": "Cargo load",
-                    "event_time": 110.94583122922904,
-                    "time_of_event": "13:51:51"
+                    "event_time": 126.74780368234974,
+                    "time_of_event": "13:49:10"
                 }
             ],
-            "estimated_time": 292.85464465290517
+            "estimated_time": 301.1706957621019
         },
         {
             "segment_id": 2,
@@ -45,16 +45,11 @@
             "events": [
                 {
                     "event_name": "Mojapollos",
-                    "event_time": 0.4942838552174482,
-                    "time_of_event": "15:05:07"
-                },
-                {
-                    "event_name": "Flat tire",
-                    "event_time": 36.39764796966554,
-                    "time_of_event": "15:11:07"
+                    "event_time": 2.4064115470175,
+                    "time_of_event": "14:54:05"
                 }
             ],
-            "estimated_time": 126.33168914797588
+            "estimated_time": 62.1753824890523
         },
         {
             "segment_id": 3,
@@ -63,7 +58,7 @@
                 10
             ],
             "events": [],
-            "estimated_time": 103.03327787939268
+            "estimated_time": 106.13544307567558
         }
     ]
 }

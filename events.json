@@ -22,7 +22,7 @@
             "name": "Flat tire",
             "duration": 45,
             "deviation": 20,
-            "probability": 0.05,
+            "probability": 0.50,
             "weather_impact": 0.1,
             "maintenance_impact": 0.2
         },
