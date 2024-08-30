@@ -4,8 +4,8 @@
     "start_time": 1000,
     "weather": 2,
     "maintenance": 0.4,
-    "total_time": 544,
-    "end_time": 1544,
+    "total_time": 198,
+    "end_time": 1198,
     "coordinates": [
         [
             10,
@@ -20,85 +20,33 @@
             40
         ]
     ],
-    "events":[
-        {
-            "name": "ponchadura",
-            "prob": 0.02,
-            "duration":[35,5]
-        },
-        {
-            "name": "bathroom",
-            "prob": 0.05,
-            "duration":[15,2],
-            "type": {
-                "name": "fijo",
-                "checkpoints": [2]
-            }
-        },
-        {
-            "name": "cop",
-            "prob": 0.3,
-            "duration":[15,85]
-        },
-        {
-            "name": "robbery",
-            "prob": 0.01,
-            "duration":[35,5]
-        },
-        {
-            "name": "nap",
-            "prob": 0.2,
-            "duration":[60,15]
-        },
-        {
-            "name": "mojaPollos",
-            "prob": 0.5,
-            "duration":[5,1]
-
-        }
-    ],
     "segment": [
         {
             "segment_id": 1,
-            "regular_duration": [120, 2],
-            "events": [
-                {
-                    "name": "mojaPollos",
-                    "prob": 1,
-                    "duration":[20,15]
-                },
-                {
-                    "event_name": "Cargamento",
-                    "event_time": 133
-                }
+            "regular_duration": [
+                120,
+                10
             ],
-            "estimated_time": 281
+            "events": [],
+            "estimated_time": 90.77225997479133
         },
         {
             "segment_id": 2,
-            "regular_duration": 30,
-            "events": [
-                {
-                    "event_name": "Banio",
-                    "event_time": 0
-                },
-                {
-                    "event_name": "Mojapollos",
-                    "event_time": 0
-                }
+            "regular_duration": [
+                30,
+                5
             ],
-            "estimated_time": 40
+            "events": [],
+            "estimated_time": 31.660889764999844
         },
         {
             "segment_id": 3,
-            "regular_duration": 95,
-            "events": [
-                {
-                    "event_name": "Banio",
-                    "event_time": 16
-                }
+            "regular_duration": [
+                95,
+                10
             ],
-            "estimated_time": 223
+            "events": [],
+            "estimated_time": 73.6021839470262
         }
     ]
 }
