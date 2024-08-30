@@ -76,7 +76,7 @@
         },
         {
             "segment_id": 2,
-            "regular_duration": 30,
+            "regular_duration": 40, 
             "events": [
                 {
                     "event_name": "Banio",
