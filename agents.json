@@ -4,8 +4,8 @@
     "start_time": 600,
     "weather": "Llovizna",
     "maintenance": 0.4,
-    "total_time": 497,
-    "end_time": 1097,
+    "total_time": 463,
+    "end_time": 1063,
     "coordinates": [
         [
             10,
@@ -30,11 +30,11 @@
             "events": [
                 {
                     "event_name": "Cargo load",
-                    "event_time": 126.74780368234974,
-                    "time_of_event": "13:49:10"
+                    "event_time": 121.05105885480833,
+                    "time_of_event": "13:51:49"
                 }
             ],
-            "estimated_time": 301.1706957621019
+            "estimated_time": 265.81906162642196
         },
         {
             "segment_id": 2,
@@ -45,11 +45,16 @@
             "events": [
                 {
                     "event_name": "Mojapollos",
-                    "event_time": 2.4064115470175,
-                    "time_of_event": "14:54:05"
+                    "event_time": 3.891899736749405,
+                    "time_of_event": "15:06:09"
+                },
+                {
+                    "event_name": "Toilet break",
+                    "event_time": 6.860215093559168,
+                    "time_of_event": "14:58:09"
                 }
             ],
-            "estimated_time": 62.1753824890523
+            "estimated_time": 89.28816978586116
         },
         {
             "segment_id": 3,
@@ -58,7 +63,7 @@
                 10
             ],
             "events": [],
-            "estimated_time": 106.13544307567558
+            "estimated_time": 95.1224509468535
         }
     ]
 }
