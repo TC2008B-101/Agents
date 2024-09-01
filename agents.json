@@ -1,0 +1,64 @@
+{
+    "simulation_id": 0,
+    "route_name": "Yucatecos",
+    "start_time": 600,
+    "weather": "Llovizna",
+    "maintenance": 0.4,
+    "total_time": 497,
+    "end_time": 1097,
+    "coordinates": [
+        [
+            10,
+            10
+        ],
+        [
+            20,
+            25
+        ],
+        [
+            30,
+            40
+        ]
+    ],
+    "segment": [
+        {
+            "segment_id": 1,
+            "regular_duration": [
+                120,
+                10
+            ],
+            "events": [
+                {
+                    "event_name": "Cargo load",
+                    "event_time": 126.74780368234974,
+                    "time_of_event": "13:49:10"
+                }
+            ],
+            "estimated_time": 301.1706957621019
+        },
+        {
+            "segment_id": 2,
+            "regular_duration": [
+                30,
+                5
+            ],
+            "events": [
+                {
+                    "event_name": "Mojapollos",
+                    "event_time": 2.4064115470175,
+                    "time_of_event": "14:54:05"
+                }
+            ],
+            "estimated_time": 62.1753824890523
+        },
+        {
+            "segment_id": 3,
+            "regular_duration": [
+                95,
+                10
+            ],
+            "events": [],
+            "estimated_time": 106.13544307567558
+        }
+    ]
+}
