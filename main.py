@@ -4,7 +4,7 @@ import json
 import statistics as st
 from datetime import datetime, timedelta
 
-#! These are used only for plotting, CAN BE REMOVED
+#! These are used only for plotting, DEVELOPMENT ONLY
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import numpy as np
@@ -61,8 +61,6 @@ def simulate_trip(data, start_time):
         weather = data["weather"]
         maintenance = data["maintenance"]
         
-        # print(f"\nCheckpoint {segment['segment_id']} - Clima: {weather}, Mantenimiento: {maintenance}, Hora actual: {current_time.strftime('%H:%M')}")
-
         # Calculate segment duration
         segment_duration = abs(st.NormalDist(segment["regular_duration"][0], segment["regular_duration"][1]).samples(1)[0])
         segment_duration *= (1 + WEATHER_PROBABILITY.get(weather) + MAINTENANCE_PROBABILITY.get(maintenance))   # Impact by states
@@ -84,19 +82,10 @@ def simulate_trip(data, start_time):
         segment["estimated_time"] = total_segment_time  # Write the total segment time in json
 
         total_time += timedelta(minutes=total_segment_time) # Add segment time to total trip time
-        # print(f"Tiempo tardado en el checkpoint {segment['segment_id']}: {total_segment_time} minutos")
-
-    end_time = (datetime.combine(datetime.today(), start_time) + total_time).time()
-    # print(f"\nHora de inicio del tráiler: {start_time.strftime('%H:%M')}")
-    # print(f"Hora de llegada calculada: {end_time.strftime('%H:%M')}")
 
     # Write total trip time and end time in json
     data["total_time"] = total_time.days * 24 * 60 + total_time.seconds // 60 + total_time.seconds%60
     data["end_time"] = data["start_time"] + data["total_time"]
-
-    # #! WRITE DATA IN AGENTS.JSON FOR DEVELOPMENT ONLY
-    # with open('agents.json', 'w') as output_file:
-    #     json.dump(data, output_file, indent=4)
 
     return data
 
@@ -124,7 +113,7 @@ def start_simulation(data):
     closest_agent = min(agents, key=lambda agent: abs(agent["total_time"] - mean_times))
     print(closest_agent)
 
-    #! Show normal distribution, CAN BE REMOVED
+    #! Show normal distribution, DEVELOPMENT ONLY
     x_axis = np.arange(240, 700, 0.1) 
     plt.plot(x_axis, norm.pdf(x_axis, mean_times, std_times)) 
     plt.show() 
