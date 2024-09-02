@@ -4,11 +4,6 @@ import json
 import statistics as st
 from datetime import datetime, timedelta
 
-#! These are used only for plotting, DEVELOPMENT ONLY
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-import numpy as np
-
 # STATE IMPACT PROBABILITY
 WEATHER_PROBABILITY = {"Soleado": 0.01, "Nublado": 0.01, "Llovizna": 0.10, "Lluvia": 0.20, "Tormenta": 0.30}  # Aumenta con la gravedad del clima
 MAINTENANCE_PROBABILITY = {0: 0.02, 0.1: 0.03, 0.2: 0.04, 0.3: 0.05, 0.4: 0.06, 0.5: 0.07, 0.6: 0.08, 0.7: 0.09, 0.8: 0.10, 0.9: 0.10, 1: 0.10}  # Probabilidad de ponchadura según el mantenimiento
@@ -113,16 +108,4 @@ def start_simulation(data):
     closest_agent = min(agents, key=lambda agent: abs(agent["total_time"] - mean_times))
     print(closest_agent)
 
-    #! Show normal distribution, DEVELOPMENT ONLY
-    x_axis = np.arange(240, 700, 0.1) 
-    plt.plot(x_axis, norm.pdf(x_axis, mean_times, std_times)) 
-    plt.show() 
-
     return closest_agent
-
-#! FOR DEVELOPMENT PURPOSES ONLY
-# Open input data
-with open('agents.json', 'r') as file:
-    data = json.load(file)
-
-output = start_simulation(data)
