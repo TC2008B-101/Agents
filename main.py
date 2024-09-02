@@ -110,7 +110,3 @@ def start_simulation(data):
 
     return closest_agent
 
-with open('agents.json', 'r') as file:
-    data = json.load(file)
-
-start_simulation(data)
