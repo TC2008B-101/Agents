@@ -2,8 +2,8 @@
     "simulation_id": 0,
     "route_name": "Yucatecos",
     "start_time": 600,
-    "weather": "Llovizna",
-    "maintenance": 0.4,
+    "weather": "Soleado",
+    "maintenance": 0,
     "total_time": 463,
     "end_time": 1063,
     "coordinates": [

@@ -2,7 +2,7 @@ import copy
 import random
 import json
 import statistics as st
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # STATE IMPACT PROBABILITY
 WEATHER_PROBABILITY = {"Soleado": 0.01, "Nublado": 0.01, "Llovizna": 0.10, "Lluvia": 0.20, "Tormenta": 0.30}  # Aumenta con la gravedad del clima
@@ -21,7 +21,7 @@ def evaluate_events(current_time, segment, weather, maintenance):
     # MANDATORY (prestablished events)
     for event in eventsjson["mandatory_events"]:
 
-        if event["segment"] == segment["segment_id"] and (event["time_window"][0] <= (current_time.hour*60 + current_time.minute) and event["time_window"][1] >= (current_time.hour*60 + current_time.minute)):
+        if event["segment"] == segment["segment_id"] and (event["time_window"][0] <= current_time and event["time_window"][1] >= current_time):
             t = abs(st.NormalDist(event["duration"], event["deviation"]).samples(1)[0])
             events.append({
                 "event_name": event["name"],
@@ -49,8 +49,8 @@ def evaluate_events(current_time, segment, weather, maintenance):
 
 # Run truck's simulation
 def simulate_trip(data, start_time):
-    current_time = datetime.combine(datetime.today(), start_time)
-    total_time = timedelta()  # Initialize total time in 0
+    current_time = start_time
+    total_time = 0  # Initialize total time in 0
 
     for segment in data["segment"]:
         weather = data["weather"]
@@ -59,7 +59,7 @@ def simulate_trip(data, start_time):
         # Calculate segment duration
         segment_duration = abs(st.NormalDist(segment["regular_duration"][0], segment["regular_duration"][1]).samples(1)[0])
         segment_duration *= (1 + WEATHER_PROBABILITY.get(weather) + MAINTENANCE_PROBABILITY.get(maintenance))   # Impact by states
-        current_time += timedelta(minutes=segment_duration)
+        current_time += segment_duration
         
         # Evaluate all events
         events, extra_time = evaluate_events(current_time, segment, weather, maintenance)
@@ -67,20 +67,20 @@ def simulate_trip(data, start_time):
         # Assign random time within segment for events to happen
         for event in events:
             t = random.randint(0, int(extra_time))
-            time_of_event = current_time + timedelta(minutes=t)
-            event.update({"time_of_event": time_of_event.strftime('%H:%M:%S')})
+            time_of_event = current_time + t
+            event.update({"time_of_event": f"{int(time_of_event//60)}:{int(time_of_event%60)}"})
 
-        current_time += timedelta(minutes=extra_time)
+        current_time += extra_time
         segment["events"] = events  # Append events to corresponding segment in json
         
         total_segment_time = segment_duration + extra_time
         segment["estimated_time"] = total_segment_time  # Write the total segment time in json
 
-        total_time += timedelta(minutes=total_segment_time) # Add segment time to total trip time
+        total_time += total_segment_time # Add segment time to total trip time
 
     # Write total trip time and end time in json
-    data["total_time"] = total_time.days * 24 * 60 + total_time.seconds // 60 + total_time.seconds%60
-    data["end_time"] = data["start_time"] + data["total_time"]
+    data["total_time"] = total_time
+    data["end_time"] = data["start_time"] + total_time
 
     return data
 
@@ -89,7 +89,7 @@ def start_simulation(data):
     agents = []
     
     # Read starting time
-    start_time = datetime.strptime(f"{data['start_time']//60}:{data['start_time']%60}", '%H:%M').time()
+    start_time = data["start_time"]
 
     # Run trip simulation
     print("Iniciando la simulacion del trayecto del trailer...\n")
@@ -109,3 +109,8 @@ def start_simulation(data):
     print(closest_agent)
 
     return closest_agent
+
+with open('agents.json', 'r') as file:
+    data = json.load(file)
+
+start_simulation(data)
